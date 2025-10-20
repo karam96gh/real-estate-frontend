@@ -682,7 +682,7 @@ function RealEstatePageContent() {
                 Object.entries(property.properties).forEach(([key, propValue]) => {
                     if (propValue && typeof propValue === 'object' && 'value' in propValue && 'property' in propValue) {
                         const propertyDef = propValue.property;
-                        let value = propValue.value;
+                        const value = propValue.value;
 
                         if (propertyDef.dataType === 'MULTIPLE_CHOICE' && typeof value === 'string') {
                             const arrayValue = value.split(',').map((item: string) => item.trim()).filter((item: string) => item);
