@@ -186,8 +186,8 @@ export const reservationsApi = {
   // الحصول على إحصائيات الحجوزات
   getReservationStats: async (): Promise<ReservationStats> => {
     try {
-      const response = await apiClient.get<ReservationStats>('/api/reservations/stats');
-      return response.data;
+      const response = await apiClient.get<{ success: boolean; data: ReservationStats }>('/api/reservations/stats');
+      return response.data.data;
     } catch (error: any) {
       if (error.response?.data) {
         throw new Error(error.response.data.error?.message || 'حدث خطأ في جلب الإحصائيات');
