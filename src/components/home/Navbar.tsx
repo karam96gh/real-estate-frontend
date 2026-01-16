@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, ChevronDown, MapPin, Heart, User, Settings, LogOut, LogIn, Calendar } from 'lucide-react';
+import { Menu, X, ChevronDown, MapPin, Heart, User, Settings, LogOut, LogIn, Calendar, DollarSign } from 'lucide-react';
 import Link from 'next/link';
 import { useAuth } from '@/hooks/useAuth';
 
@@ -254,6 +254,15 @@ export default function Navbar() {
                                                     </Link>
 
                                                     <Link
+                                                        href="/my-offers"
+                                                        className="flex items-center gap-3 px-4 py-2 text-gray-700 hover:bg-green-50 hover:text-green-600 transition-colors"
+                                                        onClick={() => setShowUserMenu(false)}
+                                                    >
+                                                        <DollarSign className="w-4 h-4" />
+                                                        عروضي
+                                                    </Link>
+
+                                                    <Link
                                                         href="/profile"
                                                         className="flex items-center gap-3 px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors"
                                                         onClick={() => setShowUserMenu(false)}
@@ -372,6 +381,18 @@ export default function Navbar() {
                                     >
                                         <Calendar className="w-5 h-5" />
                                         حجوزاتي
+                                    </Link>
+                                </div>
+
+                                {/* My Offers Mobile Link */}
+                                <div className="py-2">
+                                    <Link
+                                        href="/my-offers"
+                                        className="flex items-center gap-3 text-green-600 hover:text-green-700 transition-colors font-medium"
+                                        onClick={() => setIsMobileMenuOpen(false)}
+                                    >
+                                        <DollarSign className="w-5 h-5" />
+                                        عروضي
                                     </Link>
                                 </div>
 

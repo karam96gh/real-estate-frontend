@@ -60,6 +60,7 @@ import RealEstateCard from "@/components/widgets/PropertyGrid/PropertyCard";
 import MapboxViewer from "@/components/map/MapboxViewer";
 import PropertyActionButtons from "@/components/properties/PropertyActionButtons";
 import PropertyReservation from "@/components/PropertyReservation";
+import { PropertyOfferModal } from "@/components/properties/PropertyOffer";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -73,6 +74,7 @@ export default function PropertyDetails() {
     const [isSaved, setIsSaved] = useState(false);
     const [activeTab, setActiveTab] = useState("overview");
     const [isReservationModalOpen, setIsReservationModalOpen] = useState(false);
+    const [isOfferModalOpen, setIsOfferModalOpen] = useState(false);
     const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
     const [expandedGroups, setExpandedGroups] = useState<Set<string>>(new Set());
 
@@ -326,6 +328,8 @@ export default function PropertyDetails() {
 
     const openReservationModal = () => setIsReservationModalOpen(true);
     const closeReservationModal = () => setIsReservationModalOpen(false);
+    const openOfferModal = () => setIsOfferModalOpen(true);
+    const closeOfferModal = () => setIsOfferModalOpen(false);
     const openFeedbackModal = () => setIsFeedbackModalOpen(true);
     const closeFeedbackModal = () => setIsFeedbackModalOpen(false);
 
@@ -521,13 +525,22 @@ export default function PropertyDetails() {
                                                     </p>
                                                 ))}
                                             </div>
-                                            <Button
-                                                onClick={openReservationModal}
-                                                className="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-medium shadow-md"
-                                            >
-                                                <KeyRound className="w-4 h-4 mr-2" />
-                                                {isRental ? "حجز الشقة الآن" : "حجز العقار الآن"}
-                                            </Button>
+                                            <div className="flex gap-3">
+                                                <Button
+                                                    onClick={openReservationModal}
+                                                    className="flex-1 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-medium shadow-md"
+                                                >
+                                                    <Calendar className="w-4 h-4 mr-2" />
+                                                    حجز معاينة
+                                                </Button>
+                                                <Button
+                                                    onClick={openOfferModal}
+                                                    className="flex-1 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-medium shadow-md"
+                                                >
+                                                    <DollarSign className="w-4 h-4 mr-2" />
+                                                    تقديم عرض
+                                                </Button>
+                                            </div>
                                         </CardContent>
                                     </Card>
                                 )}
@@ -711,17 +724,16 @@ export default function PropertyDetails() {
                                             onClick={openReservationModal}
                                             className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-medium shadow-md"
                                         >
-                                            <KeyRound className="w-4 h-4 mr-2" />
-                                            {isRental ? "حجز الشقة" : "حجز العقار"}
+                                            <Calendar className="w-4 h-4 mr-2" />
+                                            حجز معاينة
                                         </Button>
-                                        {/* <Button
-                                            onClick={openFeedbackModal}
-                                            variant="outline"
-                                            className="w-full border-blue-300 text-blue-600 hover:bg-blue-50 font-medium"
+                                        <Button
+                                            onClick={openOfferModal}
+                                            className="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-medium shadow-md"
                                         >
-                                            <HandCoins className="w-4 h-4 mr-2" />
+                                            <DollarSign className="w-4 h-4 mr-2" />
                                             تقديم عرض
-                                        </Button> */}
+                                        </Button>
                                     </div>
                                 </div>
                             </CardContent>
@@ -795,6 +807,12 @@ export default function PropertyDetails() {
                             viewTime={property.viewTime}
                             isOpen={isReservationModalOpen}
                             onClose={closeReservationModal}
+                        />
+                        <PropertyOfferModal
+                            propertyId={property.id}
+                            propertyPrice={property.price}
+                            isOpen={isOfferModalOpen}
+                            onClose={closeOfferModal}
                         />
                     </>
                 )}

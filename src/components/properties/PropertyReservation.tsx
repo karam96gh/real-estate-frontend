@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
-import { Calendar, Phone, User, X, File, Mail, MessageSquare } from 'lucide-react';
+import { Calendar, Phone, User, X, File, Mail, MessageSquare, Image } from 'lucide-react';
+import { reservationsApi } from '@/api/reservationsApi';
+import { toast } from 'react-toastify';
 
 interface PropertyReservationModalProps {
     propertyId: number;
@@ -16,37 +18,59 @@ export const PropertyReservationModal: React.FC<PropertyReservationModalProps> =
     const [phone, setPhone] = useState('');
     const [whatsappPhone, setWhatsappPhone] = useState('');
     const [email, setEmail] = useState('');
+    const [visitDate, setVisitDate] = useState('');
+    const [visitTime, setVisitTime] = useState('');
     const [description, setDescription] = useState('');
     const [idCard, setIdCard] = useState<File | null>(null);
     const [commercialRegister, setCommercialRegister] = useState<File | null>(null);
+    const [idImage, setIdImage] = useState<File | null>(null);
+    const [idImagePreview, setIdImagePreview] = useState<string | null>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isSubmitted, setIsSubmitted] = useState(false);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+
+        // التحقق من صحة البيانات
+        if (!visitDate || !visitTime) {
+            toast.error('يرجى تحديد تاريخ ووقت الزيارة');
+            return;
+        }
+
         setIsSubmitting(true);
 
         try {
-            // Simulate API call
-            await new Promise(resolve => setTimeout(resolve, 1000));
+            await reservationsApi.createReservation({
+                propertyId,
+                visitDate,
+                visitTime,
+                notes: description || undefined,
+                idImage: idImage || undefined,
+            });
 
             // Reset form and show success message
             setName('');
             setPhone('');
             setWhatsappPhone('');
             setEmail('');
+            setVisitDate('');
+            setVisitTime('');
             setDescription('');
             setIdCard(null);
             setCommercialRegister(null);
+            setIdImage(null);
+            setIdImagePreview(null);
             setIsSubmitted(true);
+            toast.success('تم إنشاء الحجز بنجاح!');
 
-            // Hide success message after 5 seconds
+            // Hide success message after 3 seconds
             setTimeout(() => {
                 setIsSubmitted(false);
                 onClose();
-            }, 5000);
-        } catch (error) {
+            }, 3000);
+        } catch (error: any) {
             console.error('Error submitting reservation:', error);
+            toast.error(error.message || 'حدث خطأ في إنشاء الحجز');
         } finally {
             setIsSubmitting(false);
         }
@@ -55,6 +79,20 @@ export const PropertyReservationModal: React.FC<PropertyReservationModalProps> =
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, setFile: React.Dispatch<React.SetStateAction<File | null>>) => {
         if (e.target.files && e.target.files[0]) {
             setFile(e.target.files[0]);
+        }
+    };
+
+    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files[0]) {
+            const file = e.target.files[0];
+            setIdImage(file);
+
+            // إنشاء معاينة للصورة
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setIdImagePreview(reader.result as string);
+            };
+            reader.readAsDataURL(file);
         }
     };
 
@@ -93,7 +131,7 @@ export const PropertyReservationModal: React.FC<PropertyReservationModalProps> =
                             <div className="p-4 bg-blue-50 rounded-xl mb-6">
                                 <p className="text-gray-700">قم بملء بياناتك لحجز هذا العقار. سيتواصل معك فريقنا في أقرب وقت لتأكيد الحجز.</p>
                             </div>
-                            
+
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div className="relative">
                                     <label htmlFor="name" className="block text-gray-700 mb-2 font-medium">الاسم كامل <span className="text-red-500">*</span></label>
@@ -112,7 +150,7 @@ export const PropertyReservationModal: React.FC<PropertyReservationModalProps> =
                                         />
                                     </div>
                                 </div>
-                                
+
                                 <div className="relative">
                                     <label htmlFor="phone" className="block text-gray-700 mb-2 font-medium">رقم الهاتف <span className="text-red-500">*</span></label>
                                     <div className="relative">
@@ -166,6 +204,41 @@ export const PropertyReservationModal: React.FC<PropertyReservationModalProps> =
                                         />
                                     </div>
                                 </div>
+
+                                <div className="relative">
+                                    <label htmlFor="visitDate" className="block text-gray-700 mb-2 font-medium">تاريخ الزيارة <span className="text-red-500">*</span></label>
+                                    <div className="relative">
+                                        <div className="absolute inset-y-0 right-0 flex items-center pr-3">
+                                            <Calendar className="h-5 w-5 text-gray-400" />
+                                        </div>
+                                        <input
+                                            type="date"
+                                            id="visitDate"
+                                            value={visitDate}
+                                            onChange={(e) => setVisitDate(e.target.value)}
+                                            required
+                                            min={new Date().toISOString().split('T')[0]}
+                                            className="w-full px-4 py-3 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="relative">
+                                    <label htmlFor="visitTime" className="block text-gray-700 mb-2 font-medium">وقت الزيارة <span className="text-red-500">*</span></label>
+                                    <div className="relative">
+                                        <div className="absolute inset-y-0 right-0 flex items-center pr-3">
+                                            <Calendar className="h-5 w-5 text-gray-400" />
+                                        </div>
+                                        <input
+                                            type="time"
+                                            id="visitTime"
+                                            value={visitTime}
+                                            onChange={(e) => setVisitTime(e.target.value)}
+                                            required
+                                            className="w-full px-4 py-3 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                        />
+                                    </div>
+                                </div>
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -186,7 +259,7 @@ export const PropertyReservationModal: React.FC<PropertyReservationModalProps> =
                                     </div>
                                     <p className="text-xs text-gray-500 mt-1">PDF أو صورة</p>
                                 </div>
-                                
+
                                 <div className="relative">
                                     <label htmlFor="commercialRegister" className="block text-gray-700 mb-2 font-medium">السجل التجاري <span className="text-red-500">*</span></label>
                                     <div className="relative">
@@ -204,6 +277,40 @@ export const PropertyReservationModal: React.FC<PropertyReservationModalProps> =
                                     </div>
                                     <p className="text-xs text-gray-500 mt-1">PDF أو صورة</p>
                                 </div>
+                            </div>
+
+                            <div className="relative">
+                                <label htmlFor="idImage" className="block text-gray-700 mb-2 font-medium">صورة الهوية الشخصية (إضافي)</label>
+                                <div className="relative">
+                                    <input
+                                        type="file"
+                                        id="idImage"
+                                        onChange={handleImageChange}
+                                        accept="image/*"
+                                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                    />
+                                </div>
+                                <p className="text-xs text-gray-500 mt-1">صورة JPG أو PNG (اختياري)</p>
+
+                                {idImagePreview && (
+                                    <div className="mt-4 relative">
+                                        <img
+                                            src={idImagePreview}
+                                            alt="معاينة الهوية"
+                                            className="w-full max-w-sm h-48 object-cover rounded-lg border border-gray-300"
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                setIdImage(null);
+                                                setIdImagePreview(null);
+                                            }}
+                                            className="absolute top-2 left-2 bg-red-500 text-white p-2 rounded-full hover:bg-red-600 transition-colors"
+                                        >
+                                            <X className="w-4 h-4" />
+                                        </button>
+                                    </div>
+                                )}
                             </div>
 
                             <div className="relative">

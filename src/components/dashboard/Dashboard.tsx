@@ -18,13 +18,14 @@ import FinalCityTable from "./tables/FinalCitiesTable";
 
 // Import new components
 import ReservationsPage from "@/app/dashboard/reservations/page";
+import OffersPage from "@/app/dashboard/offers/page";
 import UsersManagementPage from "@/app/dashboard/users/page";
 import { useMyRealEstate } from "@/lib/hooks/useMyRealEstate";
 
 export default function DashboardComponent() {
   const { user, hasRole } = useAuth();
   const [activeTab, setActiveTab] = useState<
-    "mainType" | "subType" | "finalType" | "city" | "neighborhood" | "estate" | "map" | "finalCity" | "reservations" | "users" | "analytics"
+    "mainType" | "subType" | "finalType" | "city" | "neighborhood" | "estate" | "map" | "finalCity" | "reservations" | "offers" | "users" | "analytics"
   >(user?.role == "admin" ? "users" : "estate");
 
   const router = useRouter();
@@ -83,6 +84,9 @@ export default function DashboardComponent() {
 
                 {/* Reservations Tab */}
                 {activeTab === "reservations" && <ReservationsPage />}
+
+                {/* Offers Tab */}
+                {activeTab === "offers" && <OffersPage />}
 
                 {/* Users Management Tab (Admin only) */}
                 {activeTab === "users" && hasRole('admin') && <UsersManagementPage />}

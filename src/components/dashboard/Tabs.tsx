@@ -15,6 +15,7 @@ import {
   Users,
   BarChart3,
   Calendar,
+  DollarSign,
   ChevronRight,
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
@@ -29,6 +30,7 @@ type DashboardTab =
   | "map"
   | "finalCity"
   | "reservations"
+  | "offers"
   | "users"
   | "analytics";
 
@@ -66,6 +68,12 @@ export default function Tabs({ activeTab, setActiveTab }: TabsProps) {
       key: "reservations",
       label: "الحجوزات",
       icon: <Calendar className="w-4 h-4" />,
+      allowedRoles: ["company"]
+    },
+    {
+      key: "offers",
+      label: "العروض",
+      icon: <DollarSign className="w-4 h-4" />,
       allowedRoles: ["company"]
     },
 
@@ -123,7 +131,7 @@ export default function Tabs({ activeTab, setActiveTab }: TabsProps) {
   const sections: TabSection[] = [
     {
       title: "الإدارة الأساسية",
-      tabs: ["estate", "reservations", "analytics", "map"]
+      tabs: ["estate", "reservations", "offers", "analytics", "map"]
 
     },
     {

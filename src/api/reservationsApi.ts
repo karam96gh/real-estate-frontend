@@ -17,6 +17,7 @@ export interface Reservation {
   visitDate: string;
   // visitTime: string;
   notes?: string;
+  idImage?: string; // صورة الهوية الشخصية
   createdAt: string;
   updatedAt: string;
 }
@@ -26,6 +27,7 @@ export interface CreateReservationRequest {
   visitDate: string;
   visitTime: string;
   notes?: string;
+  idImage?: File; // صورة الهوية الشخصية
 }
 
 export interface UpdateReservationRequest {
@@ -65,7 +67,25 @@ export const reservationsApi = {
   // إنشاء حجز جديد
   createReservation: async (reservationData: CreateReservationRequest): Promise<Reservation> => {
     try {
-      const response = await apiClient.post<Reservation>('/api/reservations', reservationData);
+      // إنشاء FormData لإرسال الملفات
+      const formData = new FormData();
+      formData.append('propertyId', reservationData.propertyId.toString());
+      formData.append('visitDate', reservationData.visitDate);
+      formData.append('visitTime', reservationData.visitTime);
+
+      if (reservationData.notes) {
+        formData.append('notes', reservationData.notes);
+      }
+
+      if (reservationData.idImage) {
+        formData.append('idImage', reservationData.idImage);
+      }
+
+      const response = await apiClient.post<Reservation>('/api/reservations', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
       return response.data;
     } catch (error: any) {
       if (error.response?.data) {

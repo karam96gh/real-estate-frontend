@@ -397,6 +397,22 @@ export default function ReservationsPage() {
                   </div>
                 </div>
 
+                {/* ID Image */}
+                {selectedReservation.idImage && (
+                  <div>
+                    <h4 className="text-lg font-semibold text-gray-900 mb-3">صورة الهوية الشخصية</h4>
+                    <div className="bg-gray-50 rounded-lg p-4">
+                      <img
+                        src={selectedReservation.idImage}
+                        alt="صورة الهوية"
+                        className="w-full max-w-md h-64 object-contain rounded-lg border border-gray-300 cursor-pointer hover:scale-105 transition-transform"
+                        onClick={() => window.open(selectedReservation.idImage, '_blank')}
+                      />
+                      <p className="text-xs text-gray-500 mt-2 text-center">اضغط على الصورة لعرضها بحجم كامل</p>
+                    </div>
+                  </div>
+                )}
+
                 {/* Notes */}
                 {selectedReservation.notes && (
                   <div>
