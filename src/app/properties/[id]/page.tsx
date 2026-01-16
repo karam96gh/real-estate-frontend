@@ -59,7 +59,7 @@ import PropertyGallery from "@/components/properties/PropertyGallery";
 import RealEstateCard from "@/components/widgets/PropertyGrid/PropertyCard";
 import MapboxViewer from "@/components/map/MapboxViewer";
 import PropertyActionButtons from "@/components/properties/PropertyActionButtons";
-import PropertyReservation from "@/components/PropertyReservation";
+import { PropertyReservationModal } from "@/components/properties/PropertyReservation";
 import { PropertyOfferModal } from "@/components/properties/PropertyOffer";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -800,11 +800,8 @@ export default function PropertyDetails() {
             <AnimatePresence>
                 {property && (
                     <>
-                        <PropertyReservation
+                        <PropertyReservationModal
                             propertyId={property.id}
-                            propertyTitle={property.title}
-                            propertyPrice={property.price}
-                            viewTime={property.viewTime}
                             isOpen={isReservationModalOpen}
                             onClose={closeReservationModal}
                         />
