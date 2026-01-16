@@ -76,13 +76,17 @@ export const RealEstateApi = {
             }
 
             if (data.dynamicProperties) {
-                // Option 1: If dynamicProperties is an object
+                // Separate FILE properties from regular properties
                 Object.entries(data.dynamicProperties).forEach(([key, value]) => {
-                    formData.append(`properties[${key}]`, String(value));
+                    // Check if the value is a File object
+                    if (value instanceof File) {
+                        // FILE properties - send as separate fields
+                        formData.append(key, value);
+                    } else {
+                        // Regular properties - send under properties object
+                        formData.append(`properties[${key}]`, String(value));
+                    }
                 });
-
-                // Option 2: If you also want to send as JSON (alternative approach)
-                // formData.append('dynamicProperties', JSON.stringify(data.dynamicProperties));
             }
 
 
@@ -131,13 +135,17 @@ export const RealEstateApi = {
 
             // إضافة الخصائص الديناميكية
             if (data.dynamicProperties) {
-                // Option 1: If dynamicProperties is an object
+                // Separate FILE properties from regular properties
                 Object.entries(data.dynamicProperties).forEach(([key, value]) => {
-                    formData.append(`properties[${key}]`, String(value));
+                    // Check if the value is a File object
+                    if (value instanceof File) {
+                        // FILE properties - send as separate fields
+                        formData.append(key, value);
+                    } else {
+                        // Regular properties - send under properties object
+                        formData.append(`properties[${key}]`, String(value));
+                    }
                 });
-
-                // Option 2: If you also want to send as JSON (alternative approach)
-                // formData.append('dynamicProperties', JSON.stringify(data.dynamicProperties));
             }
 
             // إضافة الملفات الجديدة
