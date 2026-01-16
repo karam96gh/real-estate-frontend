@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Calendar, Phone, User, X, File, Mail, MessageSquare, Image } from 'lucide-react';
+import { Calendar, X, MessageSquare } from 'lucide-react';
 import { reservationsApi } from '@/api/reservationsApi';
 import { toast } from 'react-toastify';
 
@@ -14,15 +14,9 @@ export const PropertyReservationModal: React.FC<PropertyReservationModalProps> =
     isOpen,
     onClose
 }) => {
-    const [name, setName] = useState('');
-    const [phone, setPhone] = useState('');
-    const [whatsappPhone, setWhatsappPhone] = useState('');
-    const [email, setEmail] = useState('');
     const [visitDate, setVisitDate] = useState('');
     const [visitTime, setVisitTime] = useState('');
-    const [description, setDescription] = useState('');
-    const [idCard, setIdCard] = useState<File | null>(null);
-    const [commercialRegister, setCommercialRegister] = useState<File | null>(null);
+    const [notes, setNotes] = useState('');
     const [idImage, setIdImage] = useState<File | null>(null);
     const [idImagePreview, setIdImagePreview] = useState<string | null>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -44,20 +38,14 @@ export const PropertyReservationModal: React.FC<PropertyReservationModalProps> =
                 propertyId,
                 visitDate,
                 visitTime,
-                notes: description || undefined,
+                notes: notes || undefined,
                 idImage: idImage || undefined,
             });
 
             // Reset form and show success message
-            setName('');
-            setPhone('');
-            setWhatsappPhone('');
-            setEmail('');
             setVisitDate('');
             setVisitTime('');
-            setDescription('');
-            setIdCard(null);
-            setCommercialRegister(null);
+            setNotes('');
             setIdImage(null);
             setIdImagePreview(null);
             setIsSubmitted(true);
@@ -73,12 +61,6 @@ export const PropertyReservationModal: React.FC<PropertyReservationModalProps> =
             toast.error(error.message || 'حدث خطأ في إنشاء الحجز');
         } finally {
             setIsSubmitting(false);
-        }
-    };
-
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, setFile: React.Dispatch<React.SetStateAction<File | null>>) => {
-        if (e.target.files && e.target.files[0]) {
-            setFile(e.target.files[0]);
         }
     };
 
@@ -129,82 +111,10 @@ export const PropertyReservationModal: React.FC<PropertyReservationModalProps> =
                     ) : (
                         <form onSubmit={handleSubmit} className="space-y-6">
                             <div className="p-4 bg-blue-50 rounded-xl mb-6">
-                                <p className="text-gray-700">قم بملء بياناتك لحجز هذا العقار. سيتواصل معك فريقنا في أقرب وقت لتأكيد الحجز.</p>
+                                <p className="text-gray-700">قم بتحديد تاريخ ووقت المعاينة المناسب لك. سيتواصل معك فريقنا في أقرب وقت لتأكيد الحجز.</p>
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div className="relative">
-                                    <label htmlFor="name" className="block text-gray-700 mb-2 font-medium">الاسم كامل <span className="text-red-500">*</span></label>
-                                    <div className="relative">
-                                        <div className="absolute inset-y-0 right-0 flex items-center pr-3">
-                                            <User className="h-5 w-5 text-gray-400" />
-                                        </div>
-                                        <input
-                                            type="text"
-                                            id="name"
-                                            value={name}
-                                            onChange={(e) => setName(e.target.value)}
-                                            required
-                                            className="w-full px-4 py-3 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                            placeholder="أدخل الاسم الكامل"
-                                        />
-                                    </div>
-                                </div>
-
-                                <div className="relative">
-                                    <label htmlFor="phone" className="block text-gray-700 mb-2 font-medium">رقم الهاتف <span className="text-red-500">*</span></label>
-                                    <div className="relative">
-                                        <div className="absolute inset-y-0 right-0 flex items-center pr-3">
-                                            <Phone className="h-5 w-5 text-gray-400" />
-                                        </div>
-                                        <input
-                                            type="tel"
-                                            id="phone"
-                                            value={phone}
-                                            onChange={(e) => setPhone(e.target.value)}
-                                            required
-                                            className="w-full px-4 py-3 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                            placeholder="أدخل رقم الهاتف"
-                                        />
-                                    </div>
-                                </div>
-
-                                <div className="relative">
-                                    <label htmlFor="whatsapp" className="block text-gray-700 mb-2 font-medium">رقم الواتساب <span className="text-red-500">*</span></label>
-                                    <div className="relative">
-                                        <div className="absolute inset-y-0 right-0 flex items-center pr-3">
-                                            <Phone className="h-5 w-5 text-gray-400" />
-                                        </div>
-                                        <input
-                                            type="tel"
-                                            id="whatsapp"
-                                            value={whatsappPhone}
-                                            onChange={(e) => setWhatsappPhone(e.target.value)}
-                                            required
-                                            className="w-full px-4 py-3 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                            placeholder="أدخل رقم الواتساب"
-                                        />
-                                    </div>
-                                </div>
-
-                                <div className="relative">
-                                    <label htmlFor="email" className="block text-gray-700 mb-2 font-medium">البريد الإلكتروني <span className="text-red-500">*</span></label>
-                                    <div className="relative">
-                                        <div className="absolute inset-y-0 right-0 flex items-center pr-3">
-                                            <Mail className="h-5 w-5 text-gray-400" />
-                                        </div>
-                                        <input
-                                            type="email"
-                                            id="email"
-                                            value={email}
-                                            onChange={(e) => setEmail(e.target.value)}
-                                            required
-                                            className="w-full px-4 py-3 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                            placeholder="أدخل البريد الإلكتروني"
-                                        />
-                                    </div>
-                                </div>
-
                                 <div className="relative">
                                     <label htmlFor="visitDate" className="block text-gray-700 mb-2 font-medium">تاريخ الزيارة <span className="text-red-500">*</span></label>
                                     <div className="relative">
@@ -241,46 +151,8 @@ export const PropertyReservationModal: React.FC<PropertyReservationModalProps> =
                                 </div>
                             </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div className="relative">
-                                    <label htmlFor="idCard" className="block text-gray-700 mb-2 font-medium">صورة البطاقة الشخصية <span className="text-red-500">*</span></label>
-                                    <div className="relative">
-                                        <div className="absolute inset-y-0 right-0 flex items-center pr-3">
-                                            <File className="h-5 w-5 text-gray-400" />
-                                        </div>
-                                        <input
-                                            type="file"
-                                            id="idCard"
-                                            onChange={(e) => handleFileChange(e, setIdCard)}
-                                            required
-                                            accept=".pdf,.jpg,.jpeg,.png"
-                                            className="w-full px-4 py-3 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                        />
-                                    </div>
-                                    <p className="text-xs text-gray-500 mt-1">PDF أو صورة</p>
-                                </div>
-
-                                <div className="relative">
-                                    <label htmlFor="commercialRegister" className="block text-gray-700 mb-2 font-medium">السجل التجاري <span className="text-red-500">*</span></label>
-                                    <div className="relative">
-                                        <div className="absolute inset-y-0 right-0 flex items-center pr-3">
-                                            <File className="h-5 w-5 text-gray-400" />
-                                        </div>
-                                        <input
-                                            type="file"
-                                            id="commercialRegister"
-                                            onChange={(e) => handleFileChange(e, setCommercialRegister)}
-                                            required
-                                            accept=".pdf,.jpg,.jpeg,.png"
-                                            className="w-full px-4 py-3 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                        />
-                                    </div>
-                                    <p className="text-xs text-gray-500 mt-1">PDF أو صورة</p>
-                                </div>
-                            </div>
-
                             <div className="relative">
-                                <label htmlFor="idImage" className="block text-gray-700 mb-2 font-medium">صورة الهوية الشخصية (إضافي)</label>
+                                <label htmlFor="idImage" className="block text-gray-700 mb-2 font-medium">صورة الهوية الشخصية (الوجه الأمامي)</label>
                                 <div className="relative">
                                     <input
                                         type="file"
@@ -314,18 +186,18 @@ export const PropertyReservationModal: React.FC<PropertyReservationModalProps> =
                             </div>
 
                             <div className="relative">
-                                <label htmlFor="description" className="block text-gray-700 mb-2 font-medium">الوصف</label>
+                                <label htmlFor="notes" className="block text-gray-700 mb-2 font-medium">ملاحظات إضافية</label>
                                 <div className="relative">
                                     <div className="absolute top-3 right-3">
                                         <MessageSquare className="h-5 w-5 text-gray-400" />
                                     </div>
                                     <textarea
-                                        id="description"
-                                        value={description}
-                                        onChange={(e) => setDescription(e.target.value)}
+                                        id="notes"
+                                        value={notes}
+                                        onChange={(e) => setNotes(e.target.value)}
                                         rows={4}
                                         className="w-full px-4 py-3 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                        placeholder="أدخل وصفًا إضافيًا..."
+                                        placeholder="أدخل ملاحظات إضافية..."
                                     />
                                 </div>
                             </div>

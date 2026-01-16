@@ -192,8 +192,8 @@ export const offersApi = {
   // الحصول على إحصائيات العروض
   getOfferStats: async (): Promise<OfferStats> => {
     try {
-      const response = await apiClient.get<OfferStats>('/api/offers/stats');
-      return response.data;
+      const response = await apiClient.get<{ success: boolean; data: OfferStats }>('/api/offers/stats');
+      return response.data.data;
     } catch (error: any) {
       if (error.response?.data) {
         throw new Error(error.response.data.error?.message || 'حدث خطأ في جلب الإحصائيات');
